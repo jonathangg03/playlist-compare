@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 const authorizationHeader =
-  'BQCVlNIIxHgLV1IXOtCS0F0U0EEn8BNVJld1rZhIUaLBkMmZ-F62nm796dxVT1cSrg9fX_zcfpW388XYWwBtpu2noIgaLXSjmgouDiOk1CpXURd_S1Wt'
+  'BQBGZaAOaOfcQJhb5yXU56bMnHiV8pacFzWKVasg5mqDS7ws62xepWJaMSjGW6SjMyq-lAAN3u7SBjO6l0lGoCfUvSroUb-wecxh42zPQ8MJeezM6DgG'
 
 function App() {
   const [playlists, setPlaylists] = useState([])
   const [search, setSearch] = useState('joniux03')
   const [playlistToCompare, setPlaylistToCompare] = useState([])
-  const [tracksToCompare, setTracksToCompare] = useState([])
-  const [contentA, setContentA] = useState([])
+  const [tracksUrlToCompare, setTracksUrlToCompare] = useState([])
+  const [tracksA, setTracksA] = useState([])
+  const [tracksB, setTracksB] = useState([])
 
   const handleSearchPlaylists = async (event) => {
     event.preventDefault()
@@ -31,37 +32,16 @@ function App() {
   }
 
   const handleCompare = async () => {
-    const dataA = await fetch(tracksToCompare[0], {
-      headers: {
-        Authorization: `Bearer ${authorizationHeader}`
-      }
-    })
-
-    const dataB = await fetch(tracksToCompare[1], {
+    const finalTracks = []
+    const dataA = await fetch(tracksUrlToCompare[0], {
       headers: {
         Authorization: `Bearer ${authorizationHeader}`
       }
     })
 
     const tracksToCompareContentA = await dataA.json()
-    console.log(tracksToCompareContentA)
 
-    setContentA([...contentA, ...tracksToCompareContentA.items])
-
-    while (tracksToCompare.next) {
-      const nextData = await fetch(tracksToCompare.next, {
-        headers: {
-          Authorization: `Bearer ${authorizationHeader}`
-        }
-      })
-
-      const nextTracks = await nextData.json()
-
-      setContentA([...contentA, ...nextTracks.items])
-    }
-
-    console.log(contentA)
-    const tracksToCompareContentB = await dataB.json()
+    finalTracks.concat(tracksToCompareContentA.items)
   }
 
   return (
@@ -77,19 +57,41 @@ function App() {
         />
         <button className='button'>Buscar</button>
       </form>
-
       {playlists && (
         <div className='playlists-results__container'>
           {playlists.map((playlist) => {
             return (
               <div className='track'>
                 <div
-                  onClick={() => {
-                    setPlaylistToCompare([...playlistToCompare, playlist])
-                    setTracksToCompare([
-                      ...tracksToCompare,
-                      playlist.tracks.href
-                    ])
+                  onClick={async () => {
+                    setPlaylistToCompare([...playlistToCompare, playlist]) //fill image and name to compare
+                    const dataTracks = await fetch(playlist.tracks.href, {
+                      headers: {
+                        Authorization: `Bearer ${authorizationHeader}`
+                      }
+                    })
+                    let tracksInitial = await dataTracks.json()
+                    let tracks = [...tracksInitial.items]
+                    console.log(tracksInitial)
+
+                    while (tracksInitial.next) {
+                      const nextData = await fetch(tracksInitial.next, {
+                        headers: {
+                          Authorization: `Bearer ${authorizationHeader}`
+                        }
+                      })
+                      const nextTracks = await nextData.json()
+                      tracks = [...tracks, ...nextTracks.items]
+                      tracksInitial = nextTracks
+                    }
+                    if (tracksA.length === 0) {
+                      setTracksA(tracks)
+                    } else if (tracksB.length > 0) {
+                      setTracksA(tracks)
+                      setTracksB([])
+                    } else {
+                      setTracksB(tracks)
+                    }
                   }}
                 >
                   {playlist.images && (
@@ -111,10 +113,11 @@ function App() {
           })}
         </div>
       )}
-      {console.log('A', contentA)}
       <div>
         <h2>Comparar:</h2>
         <div className='playlists-to-comapare'>
+          {console.log('TA: ', tracksA)}
+          {console.log('TB: ', tracksB)}
           {playlistToCompare.map((playlist) => {
             return (
               <div onClick={() => setPlaylistToCompare(playlist)}>
@@ -134,7 +137,7 @@ function App() {
         </div>
         <button
           className='button'
-          disabled={tracksToCompare.length < 2}
+          disabled={tracksUrlToCompare.length < 2}
           onClick={handleCompare}
         >
           Comparar
