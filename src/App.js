@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 const authorizationHeader =
-  'BQBGZaAOaOfcQJhb5yXU56bMnHiV8pacFzWKVasg5mqDS7ws62xepWJaMSjGW6SjMyq-lAAN3u7SBjO6l0lGoCfUvSroUb-wecxh42zPQ8MJeezM6DgG'
+  'BQAI-GQVO36TluDfISFn5hNjeov6dyE7yeJ7ChKcd8lLnAZFuUqBTukD62dOX-YAxPjougO9nJsXAWrM4x4i5LRp6Kj0fFbd_UbamU2Z3mHg_KA2UbRR'
 
 function App() {
   const [playlists, setPlaylists] = useState([])
   const [search, setSearch] = useState('joniux03')
   const [playlistToCompare, setPlaylistToCompare] = useState([])
-  const [tracksUrlToCompare, setTracksUrlToCompare] = useState([])
   const [tracksA, setTracksA] = useState([])
   const [tracksB, setTracksB] = useState([])
+  const [comparisonA, setComparisonA] = useState([])
+  const [comparisonB, setComparisonB] = useState([])
 
   const handleSearchPlaylists = async (event) => {
     event.preventDefault()
@@ -32,16 +33,27 @@ function App() {
   }
 
   const handleCompare = async () => {
-    const finalTracks = []
-    const dataA = await fetch(tracksUrlToCompare[0], {
-      headers: {
-        Authorization: `Bearer ${authorizationHeader}`
-      }
-    })
+    const tracksAIds = tracksA.map((track) => track.track.id)
+    const tracksBIds = tracksB.map((track) => track.track.id)
+    const filterA = tracksA.filter(
+      (track) => !tracksBIds.includes(track.track.id)
+    )
+    const filterB = tracksB.filter(
+      (track) => !tracksAIds.includes(track.track.id)
+    )
 
-    const tracksToCompareContentA = await dataA.json()
-
-    finalTracks.concat(tracksToCompareContentA.items)
+    setComparisonA(filterA)
+    setComparisonB(filterB)
+    // console.log('A', filterA)
+    // console.log('B', filterB)
+    // const tracksInADifferentThanB = tracksAIds.filter(
+    //   //Tracks that are in A that are not in B
+    //   (track) => !tracksBIds.includes(track)
+    // )
+    // const tracksInBDifferentThanA = tracksBIds.filter(
+    //   //Tracks that are in B that are not in A
+    //   (track) => !tracksAIds.includes(track)
+    // )
   }
 
   return (
@@ -113,11 +125,11 @@ function App() {
           })}
         </div>
       )}
+      {/* {console.log('A2', tracksA)} */}
+      {console.log('B2', tracksB)}
       <div>
         <h2>Comparar:</h2>
         <div className='playlists-to-comapare'>
-          {console.log('TA: ', tracksA)}
-          {console.log('TB: ', tracksB)}
           {playlistToCompare.map((playlist) => {
             return (
               <div onClick={() => setPlaylistToCompare(playlist)}>
@@ -137,11 +149,46 @@ function App() {
         </div>
         <button
           className='button'
-          disabled={tracksUrlToCompare.length < 2}
+          disabled={tracksA.length < 0 && tracksB.length < 0}
           onClick={handleCompare}
         >
           Comparar
         </button>
+      </div>
+      <div>
+        <h2 className='compare-title'>Resultados:</h2>
+        <div className='results-container'>
+          <div className='container'>
+            {comparisonA.map((track) => {
+              return (
+                <div className='card'>
+                  <figure className='card-image-container'>
+                    <img
+                      src={track.track.album.images[0].url}
+                      alt={track.track.name}
+                    />
+                  </figure>
+                  <p className='card-name'>{track.track.name}</p>
+                </div>
+              )
+            })}
+          </div>
+          <div className='container'>
+            {comparisonB.map((track) => {
+              return (
+                <div className='card'>
+                  <figure className='card-image-container'>
+                    <img
+                      src={track.track.album.images[0].url}
+                      alt={track.track.name}
+                    />
+                  </figure>
+                  <p className='card-name'>{track.track.name}</p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       </div>
     </div>
   )
