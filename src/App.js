@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import UsernameForm from './components/UsernameForm'
 
 const authorizationHeader =
-  'BQAI-GQVO36TluDfISFn5hNjeov6dyE7yeJ7ChKcd8lLnAZFuUqBTukD62dOX-YAxPjougO9nJsXAWrM4x4i5LRp6Kj0fFbd_UbamU2Z3mHg_KA2UbRR'
+  'BQCjvyY3MVQJaDJP6NDNaQJuvCqgRCVkzmeFNTapeqKgd_9_LYmd9sexo4D1PNr65Avu3AIjDEVkwGt_utT2lFof1BGg0ozH3qXhm8RRYv73wNazYe8A'
 
 function App() {
   const [playlists, setPlaylists] = useState([])
@@ -12,25 +13,6 @@ function App() {
   const [tracksB, setTracksB] = useState([])
   const [comparisonA, setComparisonA] = useState([])
   const [comparisonB, setComparisonB] = useState([])
-
-  const handleSearchPlaylists = async (event) => {
-    event.preventDefault()
-    const result = await fetch(
-      `https://api.spotify.com/v1/users/${search}/playlists`,
-      {
-        headers: {
-          Authorization: `Bearer ${authorizationHeader}`
-        }
-      }
-    )
-
-    const playlistsResults = await result.json()
-    setPlaylists(playlistsResults.items)
-  }
-
-  const handleChangeSearch = (event) => {
-    setSearch(event.target.value)
-  }
 
   const handleCompare = async () => {
     const tracksAIds = tracksA.map((track) => track.track.id)
@@ -44,31 +26,17 @@ function App() {
 
     setComparisonA(filterA)
     setComparisonB(filterB)
-    // console.log('A', filterA)
-    // console.log('B', filterB)
-    // const tracksInADifferentThanB = tracksAIds.filter(
-    //   //Tracks that are in A that are not in B
-    //   (track) => !tracksBIds.includes(track)
-    // )
-    // const tracksInBDifferentThanA = tracksBIds.filter(
-    //   //Tracks that are in B that are not in A
-    //   (track) => !tracksAIds.includes(track)
-    // )
   }
 
   return (
     <div className='App'>
       <h1>Ingresa tu ID de usuario</h1>
-      <form onSubmit={handleSearchPlaylists}>
-        <input
-          type='text'
-          name='search'
-          onChange={handleChangeSearch}
-          value={search}
-          className='input-userCode'
-        />
-        <button className='button'>Buscar</button>
-      </form>
+      <UsernameForm
+        authorizationHeader={authorizationHeader}
+        search={search}
+        setSearch={setSearch}
+        setPlaylists={setPlaylists}
+      />
       {playlists && (
         <div className='playlists-results__container'>
           {playlists.map((playlist) => {
