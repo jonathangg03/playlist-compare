@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .button {
@@ -24,10 +26,6 @@
   height: 60px;
 }
 
-.track {
-  position: relative;
-}
-
 .button[disabled] {
   background-color: #478b5f;
 }
@@ -36,31 +34,6 @@
   width: 180px;
   height: 50px;
   box-shadow: none;
-}
-
-.front-album {
-  position: absolute;
-  top: 0;
-  left: 37px;
-  width: 200px;
-  height: 200px;
-  background-color: #000000d3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: 0.3s;
-  cursor: pointer;
-  font-size: 25px;
-  font-weight: 700;
-}
-
-.front-album:hover {
-  opacity: 1;
-}
-
-.playlist-name {
-  font-size: 19px;
 }
 
 .App-logo {
@@ -87,20 +60,6 @@
 
 .App-link {
   color: #61dafb;
-}
-
-.playlists-results__container {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-auto-rows: 300px;
-  width: 100vw;
-  margin-top: 20px;
-}
-
-.playlists-results__container div img,
-.playlists-to-comapare div img {
-  width: 200px;
-  height: 200px;
 }
 
 .playlists-to-comapare {

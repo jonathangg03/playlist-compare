@@ -1,70 +1,53 @@
-import { useState, useEffect } from 'react'
-import './App.css'
-import PlaylistResults from './components/PlaylistsResults'
-import UsernameForm from './components/UsernameForm'
+import './index.css'
 
-const authorizationHeader =
-  'BQAbAsRd4BOE5IuM86j6U1lyv9t8Wyj36WdO0Mi8kb1b0W2J7aF2gJZ9RTV1MTIgtWIVhHufkwGNNdJV94IyIsCpLIyrO_JcjCCQc4QnHH7YZMSX0-yC'
-
-function App() {
-  const [playlists, setPlaylists] = useState([])
-  const [search, setSearch] = useState('joniux03')
-  const [playlistToCompare, setPlaylistToCompare] = useState([])
-  const [tracksA, setTracksA] = useState([])
-  const [tracksB, setTracksB] = useState([])
-  const [comparisonA, setComparisonA] = useState([])
-  const [comparisonB, setComparisonB] = useState([])
-
-  const handleCompare = async () => {
-    const tracksAIds = tracksA.map((track) => track.track.id)
-    const tracksBIds = tracksB.map((track) => track.track.id)
-    const filterA = tracksA.filter(
-      (track) => !tracksBIds.includes(track.track.id)
-    )
-    const filterB = tracksB.filter(
-      (track) => !tracksAIds.includes(track.track.id)
-    )
-
-    setComparisonA(filterA)
-    setComparisonB(filterB)
-  }
-
-  // playlists,
-  //   setPlaylistToCompare,
-  //   playlistToCompare,
-  //   authorizationHeader,
-  //   tracksA,
-  //   setTracksA,
-  //   tracksB,
-  //   setTracksB
+const PlaylistResults = ({
+  playlists,
+  setPlaylistToCompare,
+  playlistToCompare,
+  authorizationHeader,
+  tracksA,
+  setTracksA,
+  tracksB,
+  setTracksB
+}) => {
   return (
-    <div className='App'>
-      <h1>Ingresa tu ID de usuario</h1>
-      <UsernameForm
-        authorizationHeader={authorizationHeader}
-        search={search}
-        setSearch={setSearch}
-        setPlaylists={setPlaylists}
-      />
-      {playlists && (
-        <PlaylistResults
-          playlists={playlists}
-          setPlaylistToCompare={setPlaylistToCompare}
-          playlistToCompare={playlistToCompare}
-          authorizationHeader={authorizationHeader}
-          tracksA={tracksA}
-          setTracksA={setTracksA}
-          tracksB={tracksB}
-          setTracksB={setTracksB}
-        />
-      )}
-      <div>
-        <h2>Comparar:</h2>
-        <div className='playlists-to-comapare'>
-          {playlistToCompare.map((playlist) => {
-            return (
-              <div onClick={() => setPlaylistToCompare(playlist)}>
-                {playlist.images && (
+    <div className='playlists-results__container'>
+      {playlists.map((playlist) => {
+        return (
+          <div className='track'>
+            <div
+              onClick={async () => {
+                setPlaylistToCompare([...playlistToCompare, playlist]) //fill image and name to compare
+                const dataTracks = await fetch(playlist.tracks.href, {
+                  headers: {
+                    Authorization: `Bearer ${authorizationHeader}`
+                  }
+                })
+                let tracksInitial = await dataTracks.json()
+                let tracks = [...tracksInitial.items]
+
+                while (tracksInitial.next) {
+                  const nextData = await fetch(tracksInitial.next, {
+                    headers: {
+                      Authorization: `Bearer ${authorizationHeader}`
+                    }
+                  })
+                  const nextTracks = await nextData.json()
+                  tracks = [...tracks, ...nextTracks.items]
+                  tracksInitial = nextTracks
+                }
+                if (tracksA.length === 0) {
+                  setTracksA(tracks)
+                } else if (tracksB.length > 0) {
+                  setTracksA(tracks)
+                  setTracksB([])
+                } else {
+                  setTracksB(tracks)
+                }
+              }}
+            >
+              {playlist.images && (
+                <figure className='playlist-card-cover'>
                   <img
                     src={
                       playlist.images[0]?.url ||
@@ -72,57 +55,18 @@ function App() {
                     }
                     alt={playlist.name}
                   />
-                )}
-                <p className='playlist-name'>{playlist.name}</p>
-              </div>
-            )
-          })}
-        </div>
-        <button
-          className='button'
-          disabled={tracksA.length < 0 && tracksB.length < 0}
-          onClick={handleCompare}
-        >
-          Comparar
-        </button>
-      </div>
-      <div>
-        <h2 className='compare-title'>Resultados:</h2>
-        <div className='results-container'>
-          <div className='container'>
-            {comparisonA.map((track) => {
-              return (
-                <div className='card'>
-                  <figure className='card-image-container'>
-                    <img
-                      src={track.track.album.images[0].url}
-                      alt={track.track.name}
-                    />
-                  </figure>
-                  <p className='card-name'>{track.track.name}</p>
-                </div>
-              )
-            })}
+                  <div className='front-playlist'>
+                    <p>Comparar</p>
+                  </div>
+                </figure>
+              )}
+              <p className='playlist-name'>{playlist.name}</p>
+            </div>
           </div>
-          <div className='container'>
-            {comparisonB.map((track) => {
-              return (
-                <div className='card'>
-                  <figure className='card-image-container'>
-                    <img
-                      src={track.track.album.images[0].url}
-                      alt={track.track.name}
-                    />
-                  </figure>
-                  <p className='card-name'>{track.track.name}</p>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
+        )
+      })}
     </div>
   )
 }
 
-export default App
+export default PlaylistResults
