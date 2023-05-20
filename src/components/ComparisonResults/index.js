@@ -1,8 +1,19 @@
-const ComparisonResults = ({ comparisonA, comparisonB }) => {
+import './index.css'
+
+const ComparisonResults = ({
+  comparisonA,
+  comparisonB,
+  namePlaylistA,
+  namePlaylistB
+}) => {
   return (
     <div>
       <h2 className='compare-title'>Resultados:</h2>
       <div className='results-container'>
+        <h3>
+          Canciones de la playlist {namePlaylistA} que no están en la playlist{' '}
+          {namePlaylistB}
+        </h3>
         <div className='container'>
           {comparisonA.map((track) => {
             return (
@@ -18,6 +29,10 @@ const ComparisonResults = ({ comparisonA, comparisonB }) => {
             )
           })}
         </div>
+        <h3>
+          Canciones de la playlist {namePlaylistB} que no están en la playlist{' '}
+          {namePlaylistA}
+        </h3>
         <div className='container'>
           {comparisonB.map((track) => {
             return (

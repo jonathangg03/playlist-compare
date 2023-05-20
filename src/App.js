@@ -61,7 +61,12 @@ function App() {
           handleCompare={handleCompare}
         />
       )}
-      <ComparisonResults comparisonA={comparisonA} comparisonB={comparisonB} />
+      <ComparisonResults
+        comparisonA={comparisonA}
+        comparisonB={comparisonB}
+        namePlaylistA={playlistToCompare[0].name}
+        namePlaylistB={playlistToCompare[1].name}
+      />
       {/* {comparisonA.length > 0 ||
         (comparisonB.length > 0 && (
 
