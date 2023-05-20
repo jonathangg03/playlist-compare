@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import ComparisonResults from './components/ComparisonResults'
 import PlaylistResults from './components/PlaylistsResults'
 import PlaylistToCompare from './components/PlaylistToCompare'
 import UsernameForm from './components/UsernameForm'
 
 const authorizationHeader =
-  'BQCbzi6tsq7y86fAskkpwU983vraQfxrk9ojxf9GLqF1og1z0jcESbpRt4-aXXqpXaVC54ScRlygGmvQJT2fKx_LFe_k6VVwzpCi7V7zRi0wuM-rA5gz'
+  'BQDAa7nPoQWh5Co8zlVCv10Ep8sGAAIfD-Fh1MwmCx2IywHy_OM1waocB7VQp4wohPz2wrKpOG2p5lUe5sYUjMc3XbVsTH6-cd1-95m4XMG4xlgkklso'
 
 function App() {
   const [playlists, setPlaylists] = useState([])
@@ -57,43 +58,14 @@ function App() {
           playlistToCompare={playlistToCompare}
           tracksA={tracksA}
           tracksB={tracksB}
+          handleCompare={handleCompare}
         />
       )}
-      <div>
-        <h2 className='compare-title'>Resultados:</h2>
-        <div className='results-container'>
-          <div className='container'>
-            {comparisonA.map((track) => {
-              return (
-                <div className='card'>
-                  <figure className='card-image-container'>
-                    <img
-                      src={track.track.album.images[0].url}
-                      alt={track.track.name}
-                    />
-                  </figure>
-                  <p className='card-name'>{track.track.name}</p>
-                </div>
-              )
-            })}
-          </div>
-          <div className='container'>
-            {comparisonB.map((track) => {
-              return (
-                <div className='card'>
-                  <figure className='card-image-container'>
-                    <img
-                      src={track.track.album.images[0].url}
-                      alt={track.track.name}
-                    />
-                  </figure>
-                  <p className='card-name'>{track.track.name}</p>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
+      <ComparisonResults comparisonA={comparisonA} comparisonB={comparisonB} />
+      {/* {comparisonA.length > 0 ||
+        (comparisonB.length > 0 && (
+
+        ))} */}
     </div>
   )
 }

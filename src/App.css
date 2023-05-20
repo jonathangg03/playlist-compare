@@ -62,19 +62,6 @@
   color: #61dafb;
 }
 
-.playlists-to-comapare {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 300px;
-  width: 100vw;
-  margin-top: 20px;
-}
-
-.compare-title {
-  margin-top: 70px;
-  margin-bottom: 30px;
-}
-
 .results-container {
   display: flex;
   justify-content: space-around;
