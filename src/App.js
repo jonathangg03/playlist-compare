@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
 import ComparisonResults from './components/ComparisonResults'
 import PlaylistResults from './components/PlaylistsResults'
@@ -6,7 +6,7 @@ import PlaylistToCompare from './components/PlaylistToCompare'
 import UsernameForm from './components/UsernameForm'
 
 const authorizationHeader =
-  'BQDAa7nPoQWh5Co8zlVCv10Ep8sGAAIfD-Fh1MwmCx2IywHy_OM1waocB7VQp4wohPz2wrKpOG2p5lUe5sYUjMc3XbVsTH6-cd1-95m4XMG4xlgkklso'
+  'BQDKG0OsoT4ksVJzoPMbeCV_1sOrjLEjRklNwcxkJLM-A6R_cEbHDl4be99ZVmzZnmY6TDs4NZ0VTXn8Wwv3f6-kLEVNlcw9DQOaWhbL1-YVpVJ5RAs'
 
 function App() {
   const [playlists, setPlaylists] = useState([])
@@ -18,8 +18,10 @@ function App() {
   const [comparisonB, setComparisonB] = useState([])
 
   const handleCompare = async () => {
+    console.log('Is comparing')
     const tracksAIds = tracksA.map((track) => track.track.id)
     const tracksBIds = tracksB.map((track) => track.track.id)
+
     const filterA = tracksA.filter(
       (track) => !tracksBIds.includes(track.track.id)
     )
@@ -61,16 +63,14 @@ function App() {
           handleCompare={handleCompare}
         />
       )}
-      <ComparisonResults
-        comparisonA={comparisonA}
-        comparisonB={comparisonB}
-        namePlaylistA={playlistToCompare[0].name}
-        namePlaylistB={playlistToCompare[1].name}
-      />
-      {/* {comparisonA.length > 0 ||
-        (comparisonB.length > 0 && (
-
-        ))} */}
+      {(comparisonA.length > 0 || comparisonB.length > 0) && (
+        <ComparisonResults
+          comparisonA={comparisonA}
+          comparisonB={comparisonB}
+          namePlaylistA={playlistToCompare[0].name}
+          namePlaylistB={playlistToCompare[1].name}
+        />
+      )}
     </div>
   )
 }
