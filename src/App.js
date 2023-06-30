@@ -5,8 +5,12 @@ import PlaylistResults from './components/PlaylistsResults'
 import PlaylistToCompare from './components/PlaylistToCompare'
 import UsernameForm from './components/UsernameForm'
 
-const authorizationHeader =
-  'BQDKG0OsoT4ksVJzoPMbeCV_1sOrjLEjRklNwcxkJLM-A6R_cEbHDl4be99ZVmzZnmY6TDs4NZ0VTXn8Wwv3f6-kLEVNlcw9DQOaWhbL1-YVpVJ5RAs'
+const fetchStates = {
+  success: 1,
+  error: -1,
+  initial: 0,
+  loading: 2
+}
 
 function App() {
   const [playlists, setPlaylists] = useState([])
@@ -16,9 +20,10 @@ function App() {
   const [tracksB, setTracksB] = useState([])
   const [comparisonA, setComparisonA] = useState([])
   const [comparisonB, setComparisonB] = useState([])
+  const [fetchStatus, setFetchStatus] = useState()
+  const [accessToken, setAccessToken] = useState('')
 
   const handleCompare = async () => {
-    console.log('Is comparing')
     const tracksAIds = tracksA.map((track) => track.track.id)
     const tracksBIds = tracksB.map((track) => track.track.id)
 
@@ -33,21 +38,37 @@ function App() {
     setComparisonB(filterB)
   }
 
+  const handleClear = () => {
+    setTracksA([])
+    setTracksB([])
+  }
+
+  const handleAuthToken = async () => {
+    const data = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'grant_type=client_credentials&client_id=c94f1348346c4072acda5a3922578a51&client_secret=e424ce3b9643414daf5fa53cd89da763'
+    })
+    const result = await data.json()
+    localStorage.setItem('accessToken', result.access_token)
+  }
+
   return (
     <div className='App'>
       <h1>Ingresa tu ID de usuario</h1>
       <UsernameForm
-        authorizationHeader={authorizationHeader}
+        accessToken={accessToken}
         search={search}
         setSearch={setSearch}
         setPlaylists={setPlaylists}
+        handleAuthToken={handleAuthToken}
       />
       {playlists && (
         <PlaylistResults
           playlists={playlists}
           setPlaylistToCompare={setPlaylistToCompare}
           playlistToCompare={playlistToCompare}
-          authorizationHeader={authorizationHeader}
+          authorizationHeader={accessToken}
           tracksA={tracksA}
           setTracksA={setTracksA}
           tracksB={tracksB}
@@ -61,6 +82,7 @@ function App() {
           tracksA={tracksA}
           tracksB={tracksB}
           handleCompare={handleCompare}
+          handleClear={handleClear}
         />
       )}
       {(comparisonA.length > 0 || comparisonB.length > 0) && (

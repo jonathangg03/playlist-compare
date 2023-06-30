@@ -1,24 +1,42 @@
 import './index.css'
 
-const UsernameForm = ({
-  authorizationHeader,
-  search,
-  setSearch,
-  setPlaylists
-}) => {
+const UsernameForm = ({ search, setSearch, setPlaylists, handleAuthToken }) => {
+  const fetchPlaylists = async () => {
+    try {
+      const result = await fetch(
+        `https://api.spotify.com/v1/users/${search}/playlists`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        }
+      )
+
+      const playlistsResults = await result.json()
+      setPlaylists(playlistsResults.items)
+      return playlistsResults
+    } catch (error) {
+      console.log('Error al traer los Playlist', error)
+    }
+  }
+
   const handleSearchPlaylists = async (event) => {
     event.preventDefault()
-    const result = await fetch(
-      `https://api.spotify.com/v1/users/${search}/playlists`,
-      {
-        headers: {
-          Authorization: `Bearer ${authorizationHeader}`
-        }
-      }
-    )
+    if (!localStorage.getItem('accessToken')) {
+      await handleAuthToken()
+    }
 
-    const playlistsResults = await result.json()
-    setPlaylists(playlistsResults.items)
+    let results = await fetchPlaylists()
+    console.log('PR', results)
+    if (
+      results.error.message &&
+      results.error.message === 'The access token expired'
+    ) {
+      await handleAuthToken() // If fail, ask token and fetch results again
+      results = fetchPlaylists() //Needs to be tested
+    }
+
+    setPlaylists(results.items)
   }
 
   const handleChangeSearch = (event) => {

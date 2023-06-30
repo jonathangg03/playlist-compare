@@ -16,8 +16,20 @@
   background-color: #478b5f;
 }
 
+.button.clear {
+  background-color: #df2828;
+  margin-left: 30px;
+}
+
 @media screen and (max-width: 475px) {
   .playlists-to-comapare {
     grid-template-columns: 1fr;
+  }
+
+  .button.clear {
+    background-color: #df2828;
+    margin-left: 0;
+    display: block;
+    margin: 0 auto;
   }
 }

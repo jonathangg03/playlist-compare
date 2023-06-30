@@ -5,7 +5,8 @@ const PlaylistToCompare = ({
   setPlaylistToCompare,
   handleCompare,
   tracksA,
-  tracksB
+  tracksB,
+  handleClear
 }) => {
   return (
     <div>
@@ -34,6 +35,9 @@ const PlaylistToCompare = ({
         onClick={handleCompare}
       >
         Comparar
+      </button>
+      <button className='button clear' onClick={handleClear}>
+        Limpiar
       </button>
     </div>
   )
