@@ -52,7 +52,7 @@ const UsernameForm = ({ search, setSearch, setPlaylists, handleAuthToken }) => {
         value={search}
         className='input-userCode'
       />
-      <button className='button'>Buscar</button>
+      <button className='button success'>Buscar</button>
     </form>
   )
 }

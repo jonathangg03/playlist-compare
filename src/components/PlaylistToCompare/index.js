@@ -30,13 +30,13 @@ const PlaylistToCompare = ({
         })}
       </div>
       <button
-        className='button'
+        className='button success'
         disabled={tracksA.length === 0 || tracksB.length === 0}
         onClick={handleCompare}
       >
         Comparar
       </button>
-      <button className='button clear' onClick={handleClear}>
+      <button className='button clear error' onClick={handleClear}>
         Limpiar
       </button>
     </div>
