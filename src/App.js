@@ -57,7 +57,6 @@ function App() {
     <div className='App'>
       <h1>Ingresa tu ID de usuario</h1>
       <UsernameForm
-        accessToken={accessToken}
         search={search}
         setSearch={setSearch}
         setPlaylists={setPlaylists}
@@ -73,6 +72,7 @@ function App() {
           setTracksA={setTracksA}
           tracksB={tracksB}
           setTracksB={setTracksB}
+          handleAuthToken={handleAuthToken}
         />
       )}
       {playlistToCompare.length > 0 && (

@@ -4,47 +4,66 @@ const PlaylistResults = ({
   playlists,
   setPlaylistToCompare,
   playlistToCompare,
-  authorizationHeader,
   tracksA,
   setTracksA,
   tracksB,
-  setTracksB
+  setTracksB,
+  handleAuthToken
 }) => {
+  const getDataTracks = async ({ playlist }) => {
+    let dataTracks = await fetch(playlist.tracks.href, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    })
+    let tracksInitial = await dataTracks.json()
+    return tracksInitial
+  }
+
+  const handleFillPlaylistToCompare = async ({ playlist }) => {
+    setPlaylistToCompare([...playlistToCompare, playlist]) //fill image and name to compare
+    let tracksInitial = await getDataTracks({ playlist })
+    console.log('TI', tracksInitial)
+    if (
+      tracksInitial.error &&
+      tracksInitial.error.message === 'The access token expired'
+    ) {
+      await handleAuthToken()
+      tracksInitial = await getDataTracks()
+    }
+    let tracks = [...tracksInitial.items]
+    if (!tracksInitial.error) {
+      while (tracksInitial.next) {
+        const nextData = await fetch(tracksInitial.next, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        })
+        const nextTracks = await nextData.json()
+        tracks = [...tracks, ...nextTracks.items]
+        tracksInitial = nextTracks
+      }
+      if (tracksA.length === 0) {
+        setTracksA(tracks)
+      } else if (tracksB.length > 0) {
+        setTracksA(tracks)
+        setTracksB([])
+      } else {
+        setTracksB(tracks)
+      }
+    }
+  }
+
   return (
     <div className='playlists-results__container'>
       {playlists.map((playlist) => {
         return (
           <div
             className='track'
-            onClick={async () => {
-              setPlaylistToCompare([...playlistToCompare, playlist]) //fill image and name to compare
-              const dataTracks = await fetch(playlist.tracks.href, {
-                headers: {
-                  Authorization: `Bearer ${authorizationHeader}`
-                }
-              })
-              let tracksInitial = await dataTracks.json()
-              let tracks = [...tracksInitial.items]
-
-              while (tracksInitial.next) {
-                const nextData = await fetch(tracksInitial.next, {
-                  headers: {
-                    Authorization: `Bearer ${authorizationHeader}`
-                  }
-                })
-                const nextTracks = await nextData.json()
-                tracks = [...tracks, ...nextTracks.items]
-                tracksInitial = nextTracks
-              }
-              if (tracksA.length === 0) {
-                setTracksA(tracks)
-              } else if (tracksB.length > 0) {
-                setTracksA(tracks)
-                setTracksB([])
-              } else {
-                setTracksB(tracks)
-              }
-            }}
+            onClick={() =>
+              // This method will fill playlist to compare
+              handleFillPlaylistToCompare({ playlist })
+            }
           >
             {playlist.images && (
               <figure className='playlist-card-cover'>
