@@ -21,9 +21,12 @@ const PlaylistResults = ({
   }
 
   const handleFillPlaylistToCompare = async ({ playlist }) => {
-    setPlaylistToCompare([...playlistToCompare, playlist]) //fill image and name to compare
+    console.log(playlistToCompare.length)
+    if (playlistToCompare.length <= 1) {
+      // Validate with 1 cause in the moment this method is excecuted, the number is one less to the original
+      setPlaylistToCompare([...playlistToCompare, playlist]) //fill image and name to compare
+    }
     let tracksInitial = await getDataTracks({ playlist })
-    console.log('TI', tracksInitial)
     if (
       tracksInitial.error &&
       tracksInitial.error.message === 'The access token expired'
@@ -45,10 +48,7 @@ const PlaylistResults = ({
       }
       if (tracksA.length === 0) {
         setTracksA(tracks)
-      } else if (tracksB.length > 0) {
-        setTracksA(tracks)
-        setTracksB([])
-      } else {
+      } else if (tracksB.length === 0) {
         setTracksB(tracks)
       }
     }
