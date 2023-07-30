@@ -4,6 +4,7 @@ import ComparisonResults from './components/ComparisonResults'
 import PlaylistResults from './components/PlaylistsResults'
 import PlaylistToCompare from './components/PlaylistToCompare'
 import UsernameForm from './components/UsernameForm'
+import Title from './components/Title'
 
 const fetchStates = {
   success: 1,
@@ -20,9 +21,8 @@ function App() {
   const [tracksB, setTracksB] = useState([])
   const [comparisonA, setComparisonA] = useState([])
   const [comparisonB, setComparisonB] = useState([])
-  const [showInfoMessage, setShowInfoMessage] = useState(false)
-  const [fetchStatus, setFetchStatus] = useState()
-  const [accessToken, setAccessToken] = useState('')
+  const [showInfoMessage, setShowInfoMessage] = useState('false')
+  // const [fetchStatus, setFetchStatus] = useState()
 
   const handleCompare = async () => {
     const tracksAIds = tracksA.map((track) => track.track.id)
@@ -56,24 +56,10 @@ function App() {
 
   return (
     <div className='App'>
-      <div className='title'>
-        <h1>Ingresa tu ID de usuario</h1>
-        <img
-          src='https://icon-library.com/images/information-icon-white/information-icon-white-6.jpg'
-          alt=''
-          onMouseEnter={() => setShowInfoMessage('true')}
-          onMouseLeave={() => setShowInfoMessage('false')}
-          className='title-info--image'
-        />
-        <div className='info-message' showmessage={showInfoMessage}>
-          <p>
-            El nombre de usuario lo puedes encontrar en la aplicación de Spotify
-            en: Foto de Perfil en la esquina superior derecha {'>'} Cuenta{' '}
-            {'> '} Nombre de usuario.
-          </p>
-        </div>
-      </div>
-
+      <Title
+        showInfoMessage={showInfoMessage}
+        setShowInfoMessage={setShowInfoMessage}
+      />
       <UsernameForm
         search={search}
         setSearch={setSearch}
@@ -85,7 +71,6 @@ function App() {
           playlists={playlists}
           setPlaylistToCompare={setPlaylistToCompare}
           playlistToCompare={playlistToCompare}
-          authorizationHeader={accessToken}
           tracksA={tracksA}
           setTracksA={setTracksA}
           tracksB={tracksB}
