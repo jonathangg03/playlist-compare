@@ -28,10 +28,7 @@ const UsernameForm = ({ search, setSearch, setPlaylists, handleAuthToken }) => {
 
     let results = await fetchPlaylists()
     console.log('PR', results)
-    if (
-      results.error.message &&
-      results.error.message === 'The access token expired'
-    ) {
+    if (results.error && results.error.message === 'The access token expired') {
       await handleAuthToken() // If fail, ask token and fetch results again
       results = fetchPlaylists() //Needs to be tested
     }
@@ -48,6 +45,7 @@ const UsernameForm = ({ search, setSearch, setPlaylists, handleAuthToken }) => {
       <input
         type='text'
         name='search'
+        placeholder='ID de usuario...'
         onChange={handleChangeSearch}
         value={search}
         className='input-userCode'
