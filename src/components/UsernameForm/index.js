@@ -1,6 +1,7 @@
 import './index.css'
+import getAuthToken from '../../services/getAuthToken'
 
-const UsernameForm = ({ search, setSearch, setPlaylists, handleAuthToken }) => {
+const UsernameForm = ({ search, setSearch, setPlaylists }) => {
   const fetchPlaylists = async () => {
     try {
       const result = await fetch(
@@ -23,13 +24,13 @@ const UsernameForm = ({ search, setSearch, setPlaylists, handleAuthToken }) => {
   const handleSearchPlaylists = async (event) => {
     event.preventDefault()
     if (!localStorage.getItem('accessToken')) {
-      await handleAuthToken()
+      await getAuthToken()
     }
 
     let results = await fetchPlaylists()
     console.log('PR', results)
     if (results.error && results.error.message === 'The access token expired') {
-      await handleAuthToken() // If fail, ask token and fetch results again
+      await getAuthToken() // If fail, ask token and fetch results again
       results = fetchPlaylists() //Needs to be tested
     }
 

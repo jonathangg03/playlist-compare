@@ -1,4 +1,5 @@
 import './index.css'
+import getAuthToken from '../../services/getAuthToken'
 
 const PlaylistResults = ({
   playlists,
@@ -7,8 +8,7 @@ const PlaylistResults = ({
   tracksA,
   setTracksA,
   tracksB,
-  setTracksB,
-  handleAuthToken
+  setTracksB
 }) => {
   const getDataTracks = async ({ playlist }) => {
     let dataTracks = await fetch(playlist.tracks.href, {
@@ -31,7 +31,7 @@ const PlaylistResults = ({
       tracksInitial.error &&
       tracksInitial.error.message === 'The access token expired'
     ) {
-      await handleAuthToken()
+      await getAuthToken()
       tracksInitial = await getDataTracks()
     }
     let tracks = [...tracksInitial.items]
