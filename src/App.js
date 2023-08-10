@@ -24,21 +24,6 @@ function App() {
   const [showInfoMessage, setShowInfoMessage] = useState('false')
   // const [fetchStatus, setFetchStatus] = useState()
 
-  const handleCompare = async () => {
-    const tracksAIds = tracksA.map((track) => track.track.id)
-    const tracksBIds = tracksB.map((track) => track.track.id)
-
-    const filterA = tracksA.filter(
-      (track) => !tracksBIds.includes(track.track.id)
-    )
-    const filterB = tracksB.filter(
-      (track) => !tracksAIds.includes(track.track.id)
-    )
-
-    setComparisonA(filterA)
-    setComparisonB(filterB)
-  }
-
   const handleClear = () => {
     setTracksA([])
     setTracksB([])
@@ -73,7 +58,8 @@ function App() {
           playlistToCompare={playlistToCompare}
           tracksA={tracksA}
           tracksB={tracksB}
-          handleCompare={handleCompare}
+          setComparisonA={setComparisonA}
+          setComparisonB={setComparisonB}
           handleClear={handleClear}
         />
       )}

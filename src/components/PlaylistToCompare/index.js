@@ -3,11 +3,27 @@ import './index.css'
 const PlaylistToCompare = ({
   playlistToCompare,
   setPlaylistToCompare,
-  handleCompare,
   tracksA,
   tracksB,
-  handleClear
+  handleClear,
+  setComparisonA,
+  setComparisonB
 }) => {
+  const handleCompare = async () => {
+    const tracksAIds = tracksA.map((track) => track.track.id)
+    const tracksBIds = tracksB.map((track) => track.track.id)
+
+    const filterA = tracksA.filter(
+      (track) => !tracksBIds.includes(track.track.id)
+    )
+    const filterB = tracksB.filter(
+      (track) => !tracksAIds.includes(track.track.id)
+    )
+
+    setComparisonA(filterA)
+    setComparisonB(filterB)
+  }
+
   return (
     <div>
       <h2>Playlist para comparar:</h2>
