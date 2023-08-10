@@ -15,7 +15,6 @@ const fetchStates = {
 
 function App() {
   const [playlists, setPlaylists] = useState([])
-  const [search, setSearch] = useState('joniux03')
   const [playlistToCompare, setPlaylistToCompare] = useState([])
   const [tracksA, setTracksA] = useState([])
   const [tracksB, setTracksB] = useState([])
@@ -36,11 +35,7 @@ function App() {
         showInfoMessage={showInfoMessage}
         setShowInfoMessage={setShowInfoMessage}
       />
-      <UsernameForm
-        search={search}
-        setSearch={setSearch}
-        setPlaylists={setPlaylists}
-      />
+      <UsernameForm setPlaylists={setPlaylists} />
       {playlists && (
         <PlaylistResults
           playlists={playlists}

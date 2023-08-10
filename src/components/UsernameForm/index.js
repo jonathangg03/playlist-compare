@@ -1,25 +1,11 @@
-import './index.css'
+import { useState } from 'react'
 import getAuthToken from '../../services/getAuthToken'
 import getPlaylists from '../../services/getPlaylists'
+import UsernameInput from '../UsernameInput'
+import './index.css'
 
-const UsernameForm = ({ search, setSearch, setPlaylists }) => {
-  // const fetchPlaylists = async () => {
-  //   try {
-  //     const result = await fetch(
-  //       `https://api.spotify.com/v1/users/${search}/playlists`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-  //         }
-  //       }
-  //     )
-
-  //     const playlistsResults = await result.json()
-  //     return playlistsResults
-  //   } catch (error) {
-  //     console.error('Error al traer los Playlist', error)
-  //   }
-  // }
+const UsernameForm = ({ setPlaylists }) => {
+  const [search, setSearch] = useState('joniux03')
 
   const handleSearchPlaylists = async (event) => {
     event.preventDefault()
@@ -37,23 +23,17 @@ const UsernameForm = ({ search, setSearch, setPlaylists }) => {
     } else {
       setPlaylists(playlistsResults.items)
     }
-
-    // setPlaylists(results.items)
-  }
-
-  const handleChangeSearch = (event) => {
-    setSearch(event.target.value)
   }
 
   return (
     <form onSubmit={handleSearchPlaylists}>
-      <input
+      <UsernameInput
         type='text'
         name='search'
         placeholder='ID de usuario...'
-        onChange={handleChangeSearch}
-        value={search}
+        search={search}
         className='input-userCode'
+        setSearch={setSearch}
       />
       <button className='button success'>Buscar</button>
     </form>
