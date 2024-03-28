@@ -1,23 +1,32 @@
-const Title = ({ showInfoMessage, setShowInfoMessage }) => {
+import useToggle from '../../hooks/useToggle'
+
+const Title = ({ infoMessage, icon }) => {
+  const { toggle, updateToggle } = useToggle(false)
+
   return (
     <div className='title'>
       <h1>Ingresa tu ID de usuario</h1>
-      <img
-        src='https://icon-library.com/images/information-icon-white/information-icon-white-6.jpg'
-        alt=''
-        onMouseEnter={() => setShowInfoMessage('true')}
-        onMouseLeave={() => setShowInfoMessage('false')}
-        className='title-info--image'
-      />
-      <div className='info-message' showmessage={showInfoMessage}>
-        <p>
-          El nombre de usuario lo puedes encontrar en la aplicación de Spotify
-          en: Foto de Perfil en la esquina superior derecha {'>'} Cuenta {'> '}{' '}
-          Nombre de usuario.
-        </p>
-      </div>
+      {icon && (
+        <img
+          src={icon}
+          alt=''
+          onMouseEnter={updateToggle}
+          onMouseLeave={updateToggle}
+          className='title-info--image'
+        />
+      )}
+      {toggle && (
+        <div className='info-message'>
+          <p>{infoMessage}</p>
+        </div>
+      )}
     </div>
   )
 }
+
+/*
+  ? Abstract validations
+  ? Dont use toggle like string
+*/
 
 export default Title

@@ -5,6 +5,7 @@ import PlaylistResults from './components/PlaylistsResults'
 import PlaylistToCompare from './components/PlaylistToCompare'
 import UsernameForm from './components/UsernameForm'
 import Title from './components/Title'
+import titleHelp from './utils/text'
 
 const fetchStates = {
   success: 1,
@@ -20,7 +21,6 @@ function App() {
   const [tracksB, setTracksB] = useState([])
   const [comparisonA, setComparisonA] = useState([])
   const [comparisonB, setComparisonB] = useState([])
-  const [showInfoMessage, setShowInfoMessage] = useState('false')
   // const [fetchStatus, setFetchStatus] = useState()
 
   const handleClear = () => {
@@ -32,8 +32,10 @@ function App() {
   return (
     <div className='App'>
       <Title
-        showInfoMessage={showInfoMessage}
-        setShowInfoMessage={setShowInfoMessage}
+        icon={
+          'https://icon-library.com/images/information-icon-white/information-icon-white-6.jpg'
+        }
+        infoMessage={titleHelp}
       />
       <UsernameForm setPlaylists={setPlaylists} />
       {playlists && (
