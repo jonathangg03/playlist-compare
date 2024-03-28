@@ -5,7 +5,7 @@ import UsernameInput from '../UsernameInput'
 import './index.css'
 
 const UsernameForm = ({ setPlaylists }) => {
-  const [search, setSearch] = useState('joniux03')
+  const [search, setSearch] = useState('')
 
   const handleSearchPlaylists = async (event) => {
     event.preventDefault()
